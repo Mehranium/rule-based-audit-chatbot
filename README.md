@@ -81,6 +81,36 @@ What are the issues, issue titles, and suggestions for a company in 2021?
 Which companies had audit durations of more than 15 days from 2020 to 2022?
 ```
 
+## Project evolution: From rule-based to LLM-powered
+
+This project went through two distinct phases, each a deliberate engineering decision.
+
+### Phase 1 — Rule-based chatbot (this repository)
+
+The first version was built under practical constraints: no external API access, no LLM integration, and a need for fast, predictable, explainable answers for non-technical auditors.
+
+The rule-based approach was the right call at that stage:
+- **Zero latency** — answers return instantly from in-memory DataFrames
+- **Full explainability** — every answer traces back to an exact regex pattern and a pandas filter
+- **No API cost or dependency** — runs entirely offline on local Excel files
+- **Forces deep domain understanding** — designing 54 query patterns required mapping every question auditors actually ask, which produced a precise mental model of the data
+
+The limitation was coverage: any question phrased outside the 54 patterns returned a fallback message. For a controlled internal tool with trained users, this was acceptable.
+
+### Phase 2 — LLM agent with Claude Sonnet 4.6 (Langdock)
+
+After Würth Group signed a contract with [Langdock](https://www.langdock.com/), the same four Excel files were migrated into a Langdock agent powered by **Claude Sonnet 4.6**.
+
+The deep domain knowledge built during Phase 1 — the data model, the column relationships, the edge cases in company name spelling, the query patterns auditors actually need — translated directly into a precise, effective system prompt for the LLM agent.
+
+The result: auditors can now ask **any question in any phrasing**, including multi-step and comparative questions that no rule-based system could handle, while the agent answers with the same accuracy as Phase 1 because the underlying data model was already well-understood.
+
+### Key insight
+
+> Building the rule-based version first was not wasted effort — it was the research phase. The constraints of writing 54 explicit patterns forced a level of domain understanding that made the LLM agent's system prompt precise and reliable from day one. The two phases are complementary, not competing.
+
+This progression reflects a core principle in applied AI engineering: **choose the right tool for the current constraints, and design for the evolution you can see coming.**
+
 ## Key technical features
 
 - **Tolerant string matching**: `canon()` normalizes accents, case, and spelling variants (e.g., ü → u)
