@@ -1,0 +1,16 @@
+# Data files — not included in the repo
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+venv/
+.venv/
+
+# macOS
+.DS_Store
+
+# Streamlit
+.streamlit/secrets.toml
